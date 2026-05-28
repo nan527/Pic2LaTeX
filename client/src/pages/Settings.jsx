@@ -1,0 +1,31 @@
+import React from 'react'
+import { Link } from 'react-router-dom'
+
+function Settings() {
+  return (
+    <div>
+      <nav className="navbar">
+        <div className="navbar-content">
+          <div className="logo">Pic2LaTeX</div>
+          <div className="nav-links">
+            <Link to="/" className="nav-link">首页</Link>
+            <Link to="/history" className="nav-link">历史记录</Link>
+          </div>
+        </div>
+      </nav>
+      <div className="container page-container fade-in">
+        <div className="page-header">
+          <Link to="/">
+            <button className="back-button">&larr;</button>
+          </Link>
+          <h1 className="page-title">API 设置</h1>
+        </div>
+        <div className="glass-card" style={{ maxWidth: '600px' }}>
+          <p>API 配置表单将在这里实现</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default Settings
