@@ -23,8 +23,8 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Routes will be added here
-// app.use('/api/upload', require('./routes/upload'));
+// Routes
+app.use('/api/upload', require('./routes/upload'));
 // app.use('/api/convert', require('./routes/convert'));
 // app.use('/api/config', require('./routes/config'));
 
