@@ -1,7 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import UploadArea from '../components/upload/UploadArea'
 
 function Home() {
+  const [imageId, setImageId] = useState(null)
+
+  const handleUploadSuccess = (id, preview) => {
+    setImageId(id)
+  }
+
   return (
     <div>
       <nav className="navbar">
@@ -15,16 +22,11 @@ function Home() {
       </nav>
       <div className="container page-container fade-in">
         <div className="main-layout">
-          <div className="glass-card">
-            <h2>上传图片</h2>
-            <p style={{ marginTop: '16px', opacity: 0.8 }}>
-              拖拽图片到此处或点击选择文件
-            </p>
-          </div>
+          <UploadArea onUploadSuccess={handleUploadSuccess} />
           <div className="glass-card">
             <h2>LaTeX 预览</h2>
             <p style={{ marginTop: '16px', opacity: 0.8 }}>
-              转换后的 LaTeX 代码将显示在这里
+              {imageId ? '图片已上传，点击转换按钮开始' : '上传图片后将显示转换结果'}
             </p>
           </div>
         </div>
