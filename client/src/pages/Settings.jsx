@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import ApiConfig from '../components/settings/ApiConfig'
 
 function Settings() {
   return (
@@ -21,7 +22,7 @@ function Settings() {
           <h1 className="page-title">API 设置</h1>
         </div>
         <div className="glass-card" style={{ maxWidth: '600px' }}>
-          <p>API 配置表单将在这里实现</p>
+          <ApiConfig />
         </div>
       </div>
     </div>
