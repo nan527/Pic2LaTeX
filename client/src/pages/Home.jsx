@@ -55,33 +55,48 @@ function Home() {
   }
 
   const handleCopyForWord = () => {
-    // Convert LaTeX to Word-friendly format
+    // Extract math expressions for Word's LaTeX input
     let wordLatex = latex
 
-    // Remove \begin{itemize} and \end{itemize}, keep \item as bullet points
-    wordLatex = wordLatex.replace(/\\begin\{itemize\}/g, '')
-    wordLatex = wordLatex.replace(/\\end\{itemize\}/g, '')
-    wordLatex = wordLatex.replace(/\\item\s*/g, '• ')
+    // Extract content from \[...\] display math blocks
+    const displayMathBlocks = []
+    const displayRegex = /\\\[([\s\S]*?)\\\]/g
+    let match
+    while ((match = displayRegex.exec(wordLatex)) !== null) {
+      displayMathBlocks.push(match[1].trim())
+    }
 
-    // Remove \begin{enumerate} and \end{enumerate}
-    wordLatex = wordLatex.replace(/\\begin\{enumerate\}/g, '')
-    wordLatex = wordLatex.replace(/\\end\{enumerate\}/g, '')
+    // Extract content from $...$ inline math
+    const inlineMathBlocks = []
+    const inlineRegex = /\$([^$]+?)\$/g
+    while ((match = inlineRegex.exec(wordLatex)) !== null) {
+      inlineMathBlocks.push(match[1].trim())
+    }
 
-    // Remove $ delimiters for inline math
-    wordLatex = wordLatex.replace(/\$([^$]+?)\$/g, '$1')
+    // If we found math blocks, combine them
+    if (displayMathBlocks.length > 0 || inlineMathBlocks.length > 0) {
+      const allMath = [...displayMathBlocks, ...inlineMathBlocks]
+      // Join with line breaks for multiple equations
+      wordLatex = allMath.join('\n')
+    } else {
+      // No delimiters found, try to clean up the raw LaTeX
+      wordLatex = wordLatex
+        .replace(/\\begin\{itemize\}/g, '')
+        .replace(/\\end\{itemize\}/g, '')
+        .replace(/\\begin\{enumerate\}/g, '')
+        .replace(/\\end\{enumerate\}/g, '')
+        .replace(/\\item\s*/g, '')
+        .replace(/\\text\{([^}]+)\}/g, '$1')
+        .trim()
+    }
 
-    // Remove \[ and \] for display math
-    wordLatex = wordLatex.replace(/\\\[/g, '')
-    wordLatex = wordLatex.replace(/\\\]/g, '')
-
-    // Remove \text{} wrapper but keep content
-    wordLatex = wordLatex.replace(/\\text\{([^}]+)\}/g, '$1')
-
-    // Clean up extra whitespace
-    wordLatex = wordLatex.replace(/\n\s*\n/g, '\n').trim()
+    // Clean up for Word
+    wordLatex = wordLatex
+      .replace(/\s+/g, ' ')  // Normalize whitespace
+      .trim()
 
     navigator.clipboard.writeText(wordLatex)
-    toast.success('已复制，可粘贴到 Word 公式编辑器')
+    toast.success('已复制！在 Word 中：插入 → 公式 → LaTeX 公式，然后粘贴')
   }
 
   const handleExport = () => {
