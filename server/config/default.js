@@ -1,5 +1,5 @@
 module.exports = {
-  port: process.env.PORT || 3001,
+  port: process.env.PORT || 3002,
   nodeEnv: process.env.NODE_ENV || 'development',
   cors: {
     origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
