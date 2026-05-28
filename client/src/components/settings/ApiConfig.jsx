@@ -7,7 +7,7 @@ function ApiConfig() {
   const [config, setConfig] = useState({
     endpoint: '',
     apiKey: '',
-    model: 'gpt-4-vision-preview'
+    model: 'mimo-v2.5'
   })
   const [testing, setTesting] = useState(false)
   const [testResult, setTestResult] = useState(null)
@@ -72,7 +72,7 @@ function ApiConfig() {
     setConfig({
       endpoint: '',
       apiKey: '',
-      model: 'gpt-4-vision-preview'
+      model: 'mimo-v2.5'
     })
     setTestResult(null)
     toast.success('配置已重置')
@@ -89,10 +89,10 @@ function ApiConfig() {
           type="text"
           value={config.endpoint}
           onChange={(e) => handleChange('endpoint', e.target.value)}
-          placeholder="https://api.openai.com/v1"
+          placeholder="https://token-plan-cn.xiaomimimo.com/v1"
         />
         <p style={{ fontSize: '12px', opacity: 0.6, marginTop: '4px' }}>
-          OpenAI: https://api.openai.com/v1
+          小米: https://token-plan-cn.xiaomimimo.com/v1
         </p>
       </div>
 
@@ -122,6 +122,7 @@ function ApiConfig() {
           onChange={(e) => handleChange('model', e.target.value)}
           style={{ cursor: 'pointer' }}
         >
+          <option value="mimo-v2.5">MIMO v2.5 (小米)</option>
           <option value="gpt-4-vision-preview">GPT-4 Vision Preview</option>
           <option value="gpt-4o">GPT-4o</option>
           <option value="gpt-4o-mini">GPT-4o Mini</option>
