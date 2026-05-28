@@ -54,6 +54,36 @@ function Home() {
     toast.success('已复制到剪贴板')
   }
 
+  const handleCopyForWord = () => {
+    // Convert LaTeX to Word-friendly format
+    let wordLatex = latex
+
+    // Remove \begin{itemize} and \end{itemize}, keep \item as bullet points
+    wordLatex = wordLatex.replace(/\\begin\{itemize\}/g, '')
+    wordLatex = wordLatex.replace(/\\end\{itemize\}/g, '')
+    wordLatex = wordLatex.replace(/\\item\s*/g, '• ')
+
+    // Remove \begin{enumerate} and \end{enumerate}
+    wordLatex = wordLatex.replace(/\\begin\{enumerate\}/g, '')
+    wordLatex = wordLatex.replace(/\\end\{enumerate\}/g, '')
+
+    // Remove $ delimiters for inline math
+    wordLatex = wordLatex.replace(/\$([^$]+?)\$/g, '$1')
+
+    // Remove \[ and \] for display math
+    wordLatex = wordLatex.replace(/\\\[/g, '')
+    wordLatex = wordLatex.replace(/\\\]/g, '')
+
+    // Remove \text{} wrapper but keep content
+    wordLatex = wordLatex.replace(/\\text\{([^}]+)\}/g, '$1')
+
+    // Clean up extra whitespace
+    wordLatex = wordLatex.replace(/\n\s*\n/g, '\n').trim()
+
+    navigator.clipboard.writeText(wordLatex)
+    toast.success('已复制，可粘贴到 Word 公式编辑器')
+  }
+
   const handleExport = () => {
     const blob = new Blob([latex], { type: 'text/plain' })
     const url = URL.createObjectURL(blob)
@@ -117,7 +147,14 @@ function Home() {
                 className="glass-button"
                 onClick={handleCopy}
               >
-                复制
+                复制 LaTeX
+              </button>
+              <button
+                className="glass-button"
+                onClick={handleCopyForWord}
+                style={{ background: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' }}
+              >
+                复制到 Word
               </button>
               <button
                 className="glass-button"
