@@ -2,27 +2,87 @@ import React, { useEffect, useRef } from 'react'
 import katex from 'katex'
 import 'katex/dist/katex.min.css'
 
-function LatexPreview({ latex }) {
+function LatexPreview({ latex, maxHeight = '300px' }) {
   const containerRef = useRef(null)
+
+  const processLatexEnvironments = (text) => {
+    // Process common LaTeX environments into HTML
+    let processed = text
+
+    // Handle \begin{itemize}...\end{itemize}
+    processed = processed.replace(/\\begin\{itemize\}([\s\S]*?)\\end\{itemize\}/g, (match, content) => {
+      const items = content.split(/\\item/).filter(item => item.trim())
+      const listItems = items.map(item => `<li style="margin-bottom: 8px;">${item.trim()}</li>`).join('')
+      return `<ul style="padding-left: 20px; margin: 8px 0;">${listItems}</ul>`
+    })
+
+    // Handle \begin{enumerate}...\end{enumerate}
+    processed = processed.replace(/\\begin\{enumerate\}([\s\S]*?)\\end\{enumerate\}/g, (match, content) => {
+      const items = content.split(/\\item/).filter(item => item.trim())
+      const listItems = items.map(item => `<li style="margin-bottom: 8px;">${item.trim()}</li>`).join('')
+      return `<ol style="padding-left: 20px; margin: 8px 0;">${listItems}</ol>`
+    })
+
+    // Handle \begin{aligned}...\end{aligned} (for multi-line equations)
+    processed = processed.replace(/\\begin\{aligned\}([\s\S]*?)\\end\{aligned\}/g, (match, content) => {
+      return content
+    })
+
+    return processed
+  }
+
+  const renderInlineMath = (text) => {
+    // Handle inline math: $...$
+    const parts = []
+    const regex = /(\$[^$]+?\$)/g
+    let lastIndex = 0
+    let match
+
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push({ type: 'text', content: text.slice(lastIndex, match.index) })
+      }
+      parts.push({ type: 'inline-math', content: match[1].slice(1, -1) })
+      lastIndex = match.index + match[1].length
+    }
+
+    if (lastIndex < text.length) {
+      parts.push({ type: 'text', content: text.slice(lastIndex) })
+    }
+
+    if (parts.length === 0) return text
+
+    return parts.map(part => {
+      if (part.type === 'text') return part.content
+      try {
+        return katex.renderToString(part.content, {
+          throwOnError: false,
+          displayMode: false,
+          strict: false,
+          trust: true
+        })
+      } catch (e) {
+        return `<span style="color: #ff6b6b;">${part.content}</span>`
+      }
+    }).join('')
+  }
 
   const renderLatex = (text) => {
     if (!text) return ''
 
-    // Split by display math first ($$...$$ or \[...\])
-    const parts = []
-    let remaining = text
+    // First, process LaTeX environments
+    let processed = processLatexEnvironments(text)
 
-    // Handle display math: $$...$$ or \[...\]
+    // Split by display math: \[...\] or $$...$$
+    const parts = []
     const displayRegex = /(\$\$[\s\S]*?\$\$|\\\[[\s\S]*?\\\])/g
     let lastIndex = 0
     let match
 
-    while ((match = displayRegex.exec(text)) !== null) {
-      // Add text before match
+    while ((match = displayRegex.exec(processed)) !== null) {
       if (match.index > lastIndex) {
-        parts.push({ type: 'text', content: text.slice(lastIndex, match.index) })
+        parts.push({ type: 'text', content: processed.slice(lastIndex, match.index) })
       }
-      // Add display math
       let mathContent = match[1]
       if (mathContent.startsWith('$$') && mathContent.endsWith('$$')) {
         mathContent = mathContent.slice(2, -2)
@@ -33,90 +93,17 @@ function LatexPreview({ latex }) {
       lastIndex = match.index + match[1].length
     }
 
-    // Add remaining text
-    if (lastIndex < text.length) {
-      parts.push({ type: 'text', content: text.slice(lastIndex) })
+    if (lastIndex < processed.length) {
+      parts.push({ type: 'text', content: processed.slice(lastIndex) })
     }
 
-    // If no display math found, treat entire text as potentially containing inline math
-    if (parts.length === 0 || (parts.length === 1 && parts[0].type === 'text')) {
-      const textContent = parts.length > 0 ? parts[0].content : text
-      // Handle inline math: $...$
-      const inlineParts = []
-      const inlineRegex = /(\$[^$]+?\$)/g
-      let inlineLastIndex = 0
-      let inlineMatch
-
-      while ((inlineMatch = inlineRegex.exec(textContent)) !== null) {
-        if (inlineMatch.index > inlineLastIndex) {
-          inlineParts.push({ type: 'text', content: textContent.slice(inlineLastIndex, inlineMatch.index) })
-        }
-        inlineParts.push({ type: 'inline-math', content: inlineMatch[1].slice(1, -1) })
-        inlineLastIndex = inlineMatch.index + inlineMatch[1].length
-      }
-
-      if (inlineLastIndex < textContent.length) {
-        inlineParts.push({ type: 'text', content: textContent.slice(inlineLastIndex) })
-      }
-
-      return inlineParts.map((part, i) => {
-        if (part.type === 'text') {
-          return part.content
-        }
-        try {
-          return katex.renderToString(part.content, {
-            throwOnError: false,
-            displayMode: false,
-            strict: false,
-            trust: true
-          })
-        } catch (e) {
-          return `<span style="color: #ff6b6b;">${part.content}</span>`
-        }
-      }).join('')
+    if (parts.length === 0) {
+      return renderInlineMath(processed)
     }
 
-    // Render mixed content
-    return parts.map((part) => {
+    return parts.map(part => {
       if (part.type === 'text') {
-        // Process inline math within text
-        const inlineParts = []
-        const inlineRegex = /(\$[^$]+?\$)/g
-        let inlineLastIndex = 0
-        let inlineMatch
-        const textContent = part.content
-
-        while ((inlineMatch = inlineRegex.exec(textContent)) !== null) {
-          if (inlineMatch.index > inlineLastIndex) {
-            inlineParts.push({ type: 'text', content: textContent.slice(inlineLastIndex, inlineMatch.index) })
-          }
-          inlineParts.push({ type: 'inline-math', content: inlineMatch[1].slice(1, -1) })
-          inlineLastIndex = inlineMatch.index + inlineMatch[1].length
-        }
-
-        if (inlineLastIndex < textContent.length) {
-          inlineParts.push({ type: 'text', content: textContent.slice(inlineLastIndex) })
-        }
-
-        if (inlineParts.length === 0) {
-          return textContent
-        }
-
-        return inlineParts.map((p, i) => {
-          if (p.type === 'text') {
-            return p.content
-          }
-          try {
-            return katex.renderToString(p.content, {
-              throwOnError: false,
-              displayMode: false,
-              strict: false,
-              trust: true
-            })
-          } catch (e) {
-            return `<span style="color: #ff6b6b;">${p.content}</span>`
-          }
-        }).join('')
+        return renderInlineMath(part.content)
       }
       // Display math
       try {
@@ -145,7 +132,7 @@ function LatexPreview({ latex }) {
 
   if (!latex) {
     return (
-      <div style={{ textAlign: 'center', padding: '48px', opacity: 0.6 }}>
+      <div style={{ textAlign: 'center', padding: '24px', opacity: 0.6 }}>
         <p>LaTeX 预览将显示在这里</p>
       </div>
     )
@@ -155,15 +142,14 @@ function LatexPreview({ latex }) {
     <div
       ref={containerRef}
       style={{
-        padding: '24px',
+        padding: '16px',
         background: 'rgba(255, 255, 255, 0.05)',
         borderRadius: '8px',
-        minHeight: '100px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '18px',
-        overflowX: 'auto'
+        minHeight: '60px',
+        maxHeight: maxHeight,
+        overflowY: 'auto',
+        fontSize: '16px',
+        lineHeight: '1.6'
       }}
     />
   )

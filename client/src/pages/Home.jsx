@@ -79,11 +79,13 @@ function Home() {
       <div className="container page-container fade-in">
         <div className="main-layout">
           <UploadArea onUploadSuccess={handleUploadSuccess} />
-          <div className="glass-card">
-            <h2 style={{ marginBottom: '16px' }}>LaTeX 预览</h2>
-            <LatexPreview latex={latex} />
+          <div className="glass-card" style={{ display: 'flex', flexDirection: 'column' }}>
+            <h2 style={{ marginBottom: '12px', flexShrink: 0 }}>LaTeX 预览</h2>
+            <div style={{ flex: 1, overflow: 'hidden' }}>
+              <LatexPreview latex={latex} maxHeight="250px" />
+            </div>
             {showEditor && (
-              <div style={{ marginTop: '16px' }}>
+              <div style={{ marginTop: '12px', flexShrink: 0 }}>
                 <LatexEditor
                   value={latex}
                   onChange={setLatex}
