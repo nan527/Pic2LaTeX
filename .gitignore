@@ -36,3 +36,6 @@ Thumbs.db
 tmp/
 temp/
 uploads/
+
+# Database
+server/data/

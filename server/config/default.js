@@ -1,6 +1,7 @@
 module.exports = {
   port: process.env.PORT || 3002,
   nodeEnv: process.env.NODE_ENV || 'development',
+  jwtSecret: process.env.JWT_SECRET || 'pic2latex-jwt-secret-change-in-production',
   cors: {
     origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
     credentials: true

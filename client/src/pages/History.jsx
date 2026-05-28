@@ -2,24 +2,54 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { getHistory, deleteFromHistory } from '../utils/storage'
+import { apiGetHistory, apiDeleteHistory } from '../services/api'
 import LatexPreview from '../components/preview/LatexPreview'
+import { useAuth } from '../contexts/AuthContext'
 
 function History() {
   const [history, setHistory] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
   const [expandedItems, setExpandedItems] = useState(new Set())
+  const { user, logout } = useAuth()
 
   useEffect(() => {
     loadHistory()
-  }, [])
+  }, [user])
 
-  const loadHistory = () => {
-    const items = getHistory()
-    setHistory(items)
+  const loadHistory = async () => {
+    if (user) {
+      try {
+        const data = await apiGetHistory()
+        if (data.success) {
+          const items = data.items.map(item => ({
+            id: item.id,
+            imageId: item.image_id,
+            latex: item.latex,
+            confidence: item.confidence,
+            timestamp: item.created_at
+          }))
+          setHistory(items)
+        }
+      } catch {
+        setHistory([])
+      }
+    } else {
+      const items = getHistory()
+      setHistory(items)
+    }
   }
 
-  const handleDelete = (id) => {
-    deleteFromHistory(id)
+  const handleDelete = async (id) => {
+    if (user) {
+      try {
+        await apiDeleteHistory(id)
+      } catch {
+        toast.error('删除失败')
+        return
+      }
+    } else {
+      deleteFromHistory(id)
+    }
     loadHistory()
     toast.success('已删除')
     setExpandedItems(prev => {
@@ -84,7 +114,22 @@ function History() {
           <div className="logo">Pic2LaTeX</div>
           <div className="nav-links">
             <Link to="/" className="nav-link">首页</Link>
+            <Link to="/docs" className="nav-link">文档</Link>
             <Link to="/settings" className="nav-link">设置</Link>
+            {user ? (
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ color: 'var(--accent-color)', fontSize: '14px' }}>{user.username}</span>
+                <button
+                  onClick={logout}
+                  className="nav-link"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.6)', fontSize: '14px' }}
+                >
+                  退出
+                </button>
+              </span>
+            ) : (
+              <Link to="/login" className="nav-link">登录</Link>
+            )}
           </div>
         </div>
       </nav>

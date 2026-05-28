@@ -24,6 +24,8 @@ app.get('/api/health', (req, res) => {
 });
 
 // Routes
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/history', require('./routes/history'));
 app.use('/api/upload', require('./routes/upload'));
 app.use('/api/convert', require('./routes/convert'));
 app.use('/api/config', require('./routes/config'));

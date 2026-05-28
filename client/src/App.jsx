@@ -1,13 +1,16 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import { AuthProvider } from './contexts/AuthContext'
 import Home from './pages/Home'
 import Settings from './pages/Settings'
 import History from './pages/History'
+import Login from './pages/Login'
+import Docs from './pages/Docs'
 
 function App() {
   return (
-    <>
+    <AuthProvider>
       <Toaster
         position="top-right"
         toastOptions={{
@@ -24,8 +27,10 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/history" element={<History />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/docs" element={<Docs />} />
       </Routes>
-    </>
+    </AuthProvider>
   )
 }
 

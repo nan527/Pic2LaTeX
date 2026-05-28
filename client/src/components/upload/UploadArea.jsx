@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import toast from 'react-hot-toast'
 import { uploadImage } from '../../services/api'
@@ -7,38 +7,30 @@ function UploadArea({ onUploadSuccess }) {
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState(null)
 
-  const onDrop = useCallback(async (acceptedFiles) => {
-    const file = acceptedFiles[0]
-
+  const processFile = useCallback(async (file) => {
     if (!file) return
 
-    // Validate file size (10MB)
     if (file.size > 10 * 1024 * 1024) {
       toast.error('文件大小超过限制（最大 10MB）')
       return
     }
 
-    // Validate file type
     const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/bmp']
     if (!allowedTypes.includes(file.type)) {
       toast.error('不支持的文件格式，请上传 PNG/JPG/JPEG/GIF/BMP')
       return
     }
 
-    // Show preview
     const reader = new FileReader()
-    reader.onload = () => {
-      setPreview(reader.result)
-    }
+    reader.onload = () => setPreview(reader.result)
     reader.readAsDataURL(file)
 
-    // Upload
     setUploading(true)
     try {
       const result = await uploadImage(file)
       if (result.success) {
         toast.success('图片上传成功')
-        onUploadSuccess(result.imageId, preview)
+        onUploadSuccess(result.imageId)
       }
     } catch (error) {
       toast.error(error.response?.data?.error?.message || '上传失败')
@@ -48,11 +40,33 @@ function UploadArea({ onUploadSuccess }) {
     }
   }, [onUploadSuccess])
 
+  const onDrop = useCallback((acceptedFiles) => {
+    processFile(acceptedFiles[0])
+  }, [processFile])
+
+  // Ctrl+V paste support
+  useEffect(() => {
+    const handlePaste = (e) => {
+      const items = e.clipboardData?.items
+      if (!items) return
+
+      for (const item of items) {
+        if (item.type.startsWith('image/')) {
+          e.preventDefault()
+          const file = item.getAsFile()
+          if (file) processFile(file)
+          return
+        }
+      }
+    }
+
+    document.addEventListener('paste', handlePaste)
+    return () => document.removeEventListener('paste', handlePaste)
+  }, [processFile])
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: {
-      'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.bmp']
-    },
+    accept: { 'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.bmp'] },
     multiple: false,
     disabled: uploading
   })
@@ -83,12 +97,7 @@ function UploadArea({ onUploadSuccess }) {
             <img
               src={preview}
               alt="Preview"
-              style={{
-                maxWidth: '100%',
-                maxHeight: '200px',
-                borderRadius: '8px',
-                marginBottom: '16px'
-              }}
+              style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '8px', marginBottom: '16px' }}
             />
             <p style={{ opacity: 0.8 }}>点击或拖拽更换图片</p>
           </div>
@@ -98,9 +107,10 @@ function UploadArea({ onUploadSuccess }) {
             <p style={{ fontSize: '16px', marginBottom: '8px' }}>
               {isDragActive ? '释放以上传图片' : '拖拽图片到此处'}
             </p>
-            <p style={{ opacity: 0.6 }}>或点击选择文件</p>
-            <p style={{ opacity: 0.4, fontSize: '12px', marginTop: '16px' }}>
-              支持 PNG、JPG、JPEG、GIF、BMP 格式，最大 10MB
+            <p style={{ opacity: 0.6, marginBottom: '4px' }}>或点击选择文件</p>
+            <p style={{ opacity: 0.5, fontSize: '13px' }}>支持 Ctrl+V 粘贴截图</p>
+            <p style={{ opacity: 0.4, fontSize: '12px', marginTop: '12px' }}>
+              PNG、JPG、GIF、BMP 格式，最大 10MB
             </p>
           </div>
         )}

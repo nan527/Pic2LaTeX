@@ -314,3 +314,72 @@ body {
     width: 100%;
   }
 }
+
+/* Symbol Panel */
+.symbol-panel {
+  margin-top: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.symbol-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.symbol-tab {
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.symbol-tab:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.symbol-tab.active {
+  background: var(--primary-gradient);
+  border-color: transparent;
+  color: white;
+}
+
+.symbol-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+  gap: 4px;
+}
+
+.symbol-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: white;
+  padding: 6px 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.symbol-btn:hover {
+  background: rgba(0, 210, 255, 0.2);
+  border-color: var(--accent-color);
+  transform: scale(1.05);
+}
+
+.symbol-btn:active {
+  transform: scale(0.95);
+}
