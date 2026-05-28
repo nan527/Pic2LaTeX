@@ -7,7 +7,7 @@ import LatexPreview from '../components/preview/LatexPreview'
 function History() {
   const [history, setHistory] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedItem, setSelectedItem] = useState(null)
+  const [expandedItems, setExpandedItems] = useState(new Set())
 
   useEffect(() => {
     loadHistory()
@@ -22,9 +22,11 @@ function History() {
     deleteFromHistory(id)
     loadHistory()
     toast.success('已删除')
-    if (selectedItem?.id === id) {
-      setSelectedItem(null)
-    }
+    setExpandedItems(prev => {
+      const next = new Set(prev)
+      next.delete(id)
+      return next
+    })
   }
 
   const handleCopy = (latex) => {
@@ -43,6 +45,24 @@ function History() {
     toast.success('已导出 .tex 文件')
   }
 
+  const toggleExpand = (id) => {
+    setExpandedItems(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      return next
+    })
+  }
+
+  const truncateLatex = (latex, maxLength = 60) => {
+    if (!latex) return ''
+    if (latex.length <= maxLength) return latex
+    return latex.substring(0, maxLength) + '...'
+  }
+
   const filteredHistory = history.filter(item =>
     item.latex?.toLowerCase().includes(searchTerm.toLowerCase())
   )
@@ -50,7 +70,6 @@ function History() {
   const formatDate = (dateString) => {
     const date = new Date(dateString)
     return date.toLocaleString('zh-CN', {
-      year: 'numeric',
       month: '2-digit',
       day: '2-digit',
       hour: '2-digit',
@@ -94,74 +113,92 @@ function History() {
             </p>
           </div>
         ) : (
-          <div style={{ display: 'grid', gap: '16px' }}>
-            {filteredHistory.map((item) => (
-              <div
-                key={item.id}
-                className="glass-card"
-                style={{ cursor: 'pointer' }}
-                onClick={() => setSelectedItem(selectedItem?.id === item.id ? null : item)}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <div style={{ flex: 1 }}>
-                    <p style={{ fontSize: '12px', opacity: 0.6, marginBottom: '8px' }}>
-                      {formatDate(item.timestamp)}
-                    </p>
-                    <p style={{
-                      fontFamily: "'Fira Code', monospace",
-                      fontSize: '14px',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis'
-                    }}>
-                      {item.latex}
-                    </p>
-                  </div>
-                  <div style={{ display: 'flex', gap: '8px', marginLeft: '16px' }}>
-                    <button
-                      className="glass-button"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleCopy(item.latex)
-                      }}
-                      style={{ padding: '8px 12px', fontSize: '12px' }}
-                    >
-                      复制
-                    </button>
-                    <button
-                      className="glass-button"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleExport(item.latex)
-                      }}
-                      style={{ padding: '8px 12px', fontSize: '12px' }}
-                    >
-                      导出
-                    </button>
-                    <button
-                      className="glass-button"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleDelete(item.id)
-                      }}
-                      style={{
-                        padding: '8px 12px',
-                        fontSize: '12px',
-                        background: 'rgba(255, 0, 0, 0.3)'
-                      }}
-                    >
-                      删除
-                    </button>
-                  </div>
-                </div>
+          <div style={{ display: 'grid', gap: '12px' }}>
+            {filteredHistory.map((item) => {
+              const isExpanded = expandedItems.has(item.id)
+              return (
+                <div
+                  key={item.id}
+                  className="glass-card"
+                  style={{ padding: '16px' }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => toggleExpand(item.id)}
+                  >
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <span style={{ fontSize: '11px', opacity: 0.5, whiteSpace: 'nowrap' }}>
+                          {formatDate(item.timestamp)}
+                        </span>
+                        <span style={{
+                          fontFamily: "'Fira Code', monospace",
+                          fontSize: '13px',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                          flex: 1
+                        }}>
+                          {truncateLatex(item.latex)}
+                        </span>
+                      </div>
+                    </div>
 
-                {selectedItem?.id === item.id && (
-                  <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--glass-border)' }}>
-                    <LatexPreview latex={item.latex} />
+                    <div style={{ display: 'flex', gap: '6px', marginLeft: '12px', flexShrink: 0 }}>
+                      <button
+                        className="glass-button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleCopy(item.latex)
+                        }}
+                        style={{ padding: '6px 10px', fontSize: '11px' }}
+                      >
+                        复制
+                      </button>
+                      <button
+                        className="glass-button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleExport(item.latex)
+                        }}
+                        style={{ padding: '6px 10px', fontSize: '11px' }}
+                      >
+                        导出
+                      </button>
+                      <button
+                        className="glass-button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleDelete(item.id)
+                        }}
+                        style={{
+                          padding: '6px 10px',
+                          fontSize: '11px',
+                          background: 'rgba(255, 0, 0, 0.3)'
+                        }}
+                      >
+                        删除
+                      </button>
+                    </div>
                   </div>
-                )}
-              </div>
-            ))}
+
+                  {isExpanded && (
+                    <div style={{
+                      marginTop: '12px',
+                      paddingTop: '12px',
+                      borderTop: '1px solid var(--glass-border)'
+                    }}>
+                      <LatexPreview latex={item.latex} />
+                    </div>
+                  )}
+                </div>
+              )
+            })}
           </div>
         )}
       </div>
