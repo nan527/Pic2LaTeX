@@ -25,8 +25,8 @@ app.get('/api/health', (req, res) => {
 
 // Routes
 app.use('/api/upload', require('./routes/upload'));
-// app.use('/api/convert', require('./routes/convert'));
-// app.use('/api/config', require('./routes/config'));
+app.use('/api/convert', require('./routes/convert'));
+app.use('/api/config', require('./routes/config'));
 
 // Error handling
 app.use(errorHandler);
