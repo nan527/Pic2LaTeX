@@ -6,7 +6,7 @@
 
 # Pic2LaTeX
 
-### AI-Powered Image to LaTeX Converter
+### AI 驱动的图片转 LaTeX 公式识别工具
 
 <img src="https://img.shields.io/badge/React-18.2-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React" />
 <img src="https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
@@ -18,91 +18,90 @@
 
 <br />
 
-> Upload an image. Get perfect LaTeX code.
-> Math formulas, text, mixed content — powered by AI vision models.
+> 上传一张图片，获得完美的 LaTeX 代码。
+> 数学公式、文本、混合内容 —— 由 AI 视觉模型驱动。
 
 <br />
 
 <img src="https://img.shields.io/badge/拖拽上传-Drag_&_Drop-667eea?style=flat-square&labelColor=302b63" alt="Drag" />
 <img src="https://img.shields.io/badge/粘贴截图-Ctrl+V-764ba2?style=flat-square&labelColor=302b63" alt="Paste" />
 <img src="https://img.shields.io/badge/实时预览-KaTeX-CD3278?style=flat-square&labelColor=302b63" alt="Preview" />
-<img src="https://img.shields.io/badge/WPS兼容-One_Click_Copy-00d2ff?style=flat-square&labelColor=302b63" alt="WPS" />
+<img src="https://img.shields.io/badge/WPS兼容-一键复制-00d2ff?style=flat-square&labelColor=302b63" alt="WPS" />
 
 </div>
 
 ---
 
-## Table of Contents
+## 目录
 
-- [Features](#-features)
-- [Demo](#-demo)
-- [Tech Stack](#-tech-stack)
-- [Architecture](#-architecture)
-- [Getting Started](#-getting-started)
-- [Usage Guide](#-usage-guide)
-- [API Configuration](#-api-configuration)
-- [Supported AI Models](#-supported-ai-models)
-- [Project Structure](#-project-structure)
-- [API Endpoints](#-api-endpoints)
-- [WPS/Word Compatibility](#-wpsword-compatibility)
-- [Keyboard Shortcuts](#-keyboard-shortcuts)
-- [Environment Variables](#-environment-variables)
-- [FAQ](#-faq)
-- [Contributing](#-contributing)
-- [License](#-license)
-
----
-
-## Features
-
-| Feature | Description |
-|:--------|:------------|
-| **Multi-Upload** | Drag-and-drop, click to browse, or `Ctrl+V` paste screenshots directly |
-| **AI Recognition** | Powered by OpenAI-compatible vision models (MIMO, GPT-4V, Claude) |
-| **LaTeX Preview** | Real-time rendering with KaTeX — inline math `$...$` and display math `$$...$$` |
-| **Symbol Panel** | 7 categories: Greek letters, operators, relations, arrows, sets, structures, templates |
-| **WPS/Word Copy** | Auto-strips delimiters, converts `\text{}` to `\mathrm{}`, wraps multi-line in `aligned` |
-| **Export .tex** | Download recognized formulas as standard `.tex` files |
-| **History** | Auto-saves records with search, expandable preview, copy, export, delete |
-| **Account System** | Register to sync history to cloud (SQLite + JWT); works offline with localStorage |
-| **Glassmorphism UI** | Frosted glass cards, gradient backgrounds, hover glow, smooth animations |
-| **Responsive** | Desktop-first with mobile breakpoints at 768px and 480px |
-| **Privacy First** | API keys stored only in browser; images processed in memory, never persisted |
-| **Docs Page** | Built-in documentation accessible from the nav bar |
+- [功能特性](#-功能特性)
+- [效果展示](#-效果展示)
+- [技术栈](#-技术栈)
+- [系统架构](#-系统架构)
+- [快速开始](#-快速开始)
+- [使用指南](#-使用指南)
+- [API 配置](#-api-配置)
+- [支持的 AI 模型](#-支持的-ai-模型)
+- [项目结构](#-项目结构)
+- [接口文档](#-接口文档)
+- [WPS/Word 兼容说明](#-wpsword-兼容说明)
+- [快捷操作](#-快捷操作)
+- [环境变量](#-环境变量)
+- [常见问题](#-常见问题)
+- [参与贡献](#-参与贡献)
+- [开源许可](#-开源许可)
 
 ---
 
-## Demo
+## 功能特性
 
-### Workflow
+| 功能 | 说明 |
+|:-----|:-----|
+| **多种上传方式** | 拖拽上传、点击选择文件、`Ctrl+V` 粘贴截图 |
+| **AI 识别转换** | 支持小米 MIMO、GPT-4 Vision、Claude 等 OpenAI 兼容视觉模型 |
+| **LaTeX 实时预览** | KaTeX 渲染引擎，支持行内公式 `$...$` 和行间公式 `$$...$$` |
+| **数学符号面板** | 7 大类常用符号：希腊字母、运算符、关系符、箭头、集合、结构模板 |
+| **WPS 兼容复制** | 自动去除分隔符、转换 `\text{}` 为 `\mathrm{}`、多行公式自动包裹 `aligned` |
+| **导出 .tex 文件** | 下载标准 LaTeX 文件，可在 TeX 编辑器中直接使用 |
+| **历史记录** | 自动保存识别记录，支持搜索、展开预览、复制、导出、删除 |
+| **账号系统** | 注册后历史记录保存到云端（SQLite + JWT），未登录使用 localStorage |
+| **玻璃拟态 UI** | 毛玻璃卡片、渐变背景、悬停发光、流畅动画 |
+| **响应式布局** | 桌面优先，移动端适配（768px / 480px 断点） |
+| **隐私安全** | API 密钥仅存浏览器；图片内存处理，不持久化存储 |
+| **内置文档** | 导航栏可直接访问使用文档 |
+
+---
+
+## 效果展示
+
+### 工作流程
 
 ```
  +-----------+       +--------------+       +---------------+       +----------------+
- |  Upload   | ----> | AI Vision    | ----> | KaTeX Preview | ----> | Copy / Export  |
- |  Image    |       | Model API    |       | (Real-time)   |       | WPS / .tex     |
+ |  上传图片  | ----> |  AI 视觉模型  | ----> | KaTeX 实时预览 | ----> | 复制 / 导出    |
+ |  PNG/JPG   |       |  MIMO/GPT    |       |  渲染数学公式  |       | WPS / .tex     |
  +-----------+       +--------------+       +---------------+       +----------------+
-   PNG/JPG              MIMO/GPT              Rendered Math           One Click
 ```
 
-### UI Layout
+### 界面布局
 
 ```
 +--------------------------------------------------------------------+
-|  [Logo] Pic2LaTeX         [Docs] [Settings] [History] [Login]      |
+|  [Logo] Pic2LaTeX         [文档] [设置] [历史记录] [登录]           |
 +--------------------------------------------------------------------+
 |                                                                      |
 |  +------------------------------+  +------------------------------+  |
 |  |                              |  |                              |  |
-|  |   Drag & drop image here     |  |   LaTeX Preview              |  |
-|  |   or click to select         |  |                              |  |
+|  |   拖拽图片到此处             |  |   LaTeX 预览                 |  |
+|  |   或点击选择文件             |  |                              |  |
 |  |                              |  |         x^2                  |  |
-|  |   [Upload Button]            |  |    --------- + Hello World   |  |
+|  |   [上传按钮]                 |  |    --------- + Hello World   |  |
 |  |                              |  |         2                    |  |
-|  |   Supports Ctrl+V paste      |  |                              |  |
+|  |   支持 Ctrl+V 粘贴截图       |  |                              |  |
 |  +------------------------------+  +------------------------------+  |
 |                                                                      |
 |  +--------------------------------------------------------------+   |
-|  |  [Convert]  [Copy LaTeX]  [Export]  [Edit]                    |   |
+|  |  [转换]  [复制 LaTeX]  [导出]  [编辑]                          |   |
 |  +--------------------------------------------------------------+   |
 |                                                                      |
 +--------------------------------------------------------------------+
@@ -110,60 +109,60 @@
 
 ---
 
-## Tech Stack
+## 技术栈
 
-### Frontend
+### 前端
 
-| Technology | Version | Purpose |
-|:-----------|:--------|:--------|
-| React | 18.2 | UI framework with hooks and context |
-| React Router | 6.x | Client-side SPA routing |
-| Ant Design | 5.x | UI component library |
-| KaTeX | 0.16 | LaTeX math rendering engine |
-| Vite | 5.x | Build tool and dev server with HMR |
-| Axios | 1.6 | Promise-based HTTP client |
-| react-dropzone | 14.x | Drag-and-drop file upload |
-| react-hot-toast | 2.4 | Toast notifications |
+| 技术 | 版本 | 用途 |
+|:-----|:-----|:-----|
+| React | 18.2 | UI 框架，Hooks + Context |
+| React Router | 6.x | 客户端 SPA 路由 |
+| Ant Design | 5.x | UI 组件库 |
+| KaTeX | 0.16 | LaTeX 数学公式渲染引擎 |
+| Vite | 5.x | 构建工具，支持 HMR 热更新 |
+| Axios | 1.6 | Promise 风格 HTTP 客户端 |
+| react-dropzone | 14.x | 拖拽上传组件 |
+| react-hot-toast | 2.4 | Toast 通知 |
 
-### Backend
+### 后端
 
-| Technology | Version | Purpose |
-|:-----------|:--------|:--------|
-| Node.js | 18+ | JavaScript runtime |
-| Express | 4.x | Web application framework |
-| SQLite | 3 | Embedded database (better-sqlite3) |
-| JWT | - | Token-based authentication (jsonwebtoken) |
-| bcryptjs | - | Password hashing |
-| Multer | 1.4 | Multipart form data handling |
-| Sharp | 0.33 | Image processing and optimization |
-| Helmet | 7.x | Security HTTP headers |
-| Morgan | 1.10 | HTTP request logger |
-| CORS | 2.8 | Cross-origin resource sharing |
-| dotenv | 16.x | Environment variable management |
+| 技术 | 版本 | 用途 |
+|:-----|:-----|:-----|
+| Node.js | 18+ | JavaScript 运行时 |
+| Express | 4.x | Web 应用框架 |
+| SQLite | 3 | 嵌入式数据库（better-sqlite3） |
+| JWT | - | Token 认证（jsonwebtoken） |
+| bcryptjs | - | 密码哈希 |
+| Multer | 1.4 | 文件上传中间件 |
+| Sharp | 0.33 | 图片处理与优化 |
+| Helmet | 7.x | 安全 HTTP 头 |
+| Morgan | 1.10 | HTTP 请求日志 |
+| CORS | 2.8 | 跨域资源共享 |
+| dotenv | 16.x | 环境变量管理 |
 
-### Design System
+### 设计系统
 
-| Element | Value |
-|:--------|:------|
-| Style | Glassmorphism (frosted glass effect) |
-| Primary Gradient | `#667eea` → `#764ba2` |
-| Background | `#0f0c29` → `#302b63` → `#24243e` |
-| Accent | `#00d2ff` (Neon Blue) |
-| Animations | fadeIn, slideIn, scaleIn, pulse, hover glow |
+| 元素 | 值 |
+|:-----|:---|
+| 风格 | 玻璃拟态（Glassmorphism） |
+| 主渐变色 | `#667eea` → `#764ba2` |
+| 背景渐变 | `#0f0c29` → `#302b63` → `#24243e` |
+| 强调色 | `#00d2ff`（霓虹蓝） |
+| 动画效果 | fadeIn、slideIn、scaleIn、pulse、hover glow |
 
 ---
 
-## Architecture
+## 系统架构
 
 ```
                            +-----------------+
-                           |   User Browser  |
+                           |    用户浏览器    |
                            +--------+--------+
                                     |
                       +-------------+-------------+
                       |                           |
-                Upload Image              Convert Request
-                (multipart)               (JSON + config)
+                上传图片                      转换请求
+               (multipart)                (JSON + 配置)
                       |                           |
                       v                           v
               +-------+--------+         +--------+---------+
@@ -172,54 +171,54 @@
                       |                           |
                       v                           v
               +-------+--------+         +--------+---------+
-              |  Sharp Resize   |         |  AI Vision API    |
-              |  & Optimize     |         |  (OpenAI format)  |
+              |  Sharp 图片处理  |         |  AI 视觉模型 API  |
+              |  缩放 & 优化     |         |  (OpenAI 格式)    |
               +-------+--------+         +--------+---------+
                       |                           |
                       v                           v
               +-------+--------+         +--------+---------+
-              |  SQLite Store   |         |  Parse & Return   |
-              |  (if logged in) |         |  LaTeX String     |
+              |  SQLite 存储     |         |  解析并返回       |
+              | （登录用户）      |         |  LaTeX 字符串     |
               +----------------+         +------------------+
                                                     |
                                                     v
                                            +--------+---------+
-                                           |  KaTeX Render     |
-                                           |  (Browser-side)   |
+                                           |  KaTeX 渲染       |
+                                           | （浏览器端）       |
                                            +------------------+
 ```
 
 ---
 
-## Getting Started
+## 快速开始
 
-### Prerequisites
+### 环境要求
 
-| Requirement | Version | Check |
-|:------------|:--------|:------|
+| 依赖 | 版本 | 检查命令 |
+|:-----|:-----|:---------|
 | Node.js | >= 18.0.0 | `node --version` |
 | npm | >= 9.0.0 | `npm --version` |
-| Git | any | `git --version` |
+| Git | 任意 | `git --version` |
 
-### Installation
+### 安装步骤
 
 ```bash
-# 1. Clone the repository
+# 1. 克隆仓库
 git clone https://github.com/your-username/Pic2LaTeX-py.git
 cd Pic2LaTeX-py
 
-# 2. Install backend dependencies
+# 2. 安装后端依赖
 cd server
 npm install
 
-# 3. Install frontend dependencies
+# 3. 安装前端依赖
 cd ../client
 npm install
 ```
 
-### Configuration
+### 环境配置
 
-Create `.env` in the `server/` directory:
+在 `server/` 目录下创建 `.env` 文件：
 
 ```env
 PORT=3002
@@ -228,155 +227,155 @@ CORS_ORIGIN=http://localhost:5173
 JWT_SECRET=your-secret-key-here
 ```
 
-### Start Development
+### 启动开发环境
 
 ```bash
-# Terminal 1 — Backend (port 3002)
+# 终端 1 — 启动后端（端口 3002）
 cd server
 npm run dev
 
-# Terminal 2 — Frontend (port 5173)
+# 终端 2 — 启动前端（端口 5173）
 cd client
 npm run dev
 ```
 
-Open `http://localhost:5173` in your browser.
+浏览器打开 `http://localhost:5173`。
 
-### Production Build
+### 生产构建
 
 ```bash
-# Build frontend
+# 构建前端
 cd client
 npm run build
 
-# Start production server
+# 启动生产服务器
 cd ../server
 npm start
-# Access at http://localhost:3002
+# 访问 http://localhost:3002
 ```
 
 ---
 
-## Usage Guide
+## 使用指南
 
-### Step 1: Configure API
+### 第一步：配置 AI API
 
-1. Click **Settings** in the navigation bar
-2. Enter your API endpoint (e.g. `https://token-plan-cn.xiaomimimo.com/v1`)
-3. Enter your API key
-4. Select a model from the dropdown
-5. Click **Test Connection** to verify
-6. Click **Save Config**
+1. 点击导航栏「**设置**」
+2. 填写 API 端点（如 `https://token-plan-cn.xiaomimimo.com/v1`）
+3. 填写 API 密钥
+4. 选择模型
+5. 点击「**测试连接**」验证配置
+6. 点击「**保存配置**」
 
-### Step 2: Upload an Image
+### 第二步：上传图片
 
-Three ways to upload:
+三种上传方式：
 
-| Method | How |
-|:-------|:----|
-| **Drag & Drop** | Drag an image file onto the upload area |
-| **Click** | Click the upload area to open file picker |
-| **Paste** | Press `Ctrl+V` anywhere on the page |
+| 方式 | 操作 |
+|:-----|:-----|
+| **拖拽上传** | 将图片文件拖到上传区域 |
+| **点击选择** | 点击上传区域打开文件选择器 |
+| **粘贴截图** | 按 `Ctrl+V` 粘贴剪贴板中的截图 |
 
-Supported: `PNG` `JPG` `JPEG` `GIF` `BMP` — Max 10MB
+支持格式：`PNG` `JPG` `JPEG` `GIF` `BMP` —— 最大 10MB
 
-### Step 3: Convert
+### 第三步：转换
 
-Click the **Convert** button. The AI analyzes the image and generates LaTeX code.
+点击「**转换**」按钮，AI 分析图片并生成 LaTeX 代码。
 
-### Step 4: Edit & Refine
+### 第四步：编辑与导出
 
-- **Preview**: Rendered formula updates in real-time
-- **Edit**: Click the Edit button to open the code editor
-- **Symbol Panel**: Click math symbols to insert them at the cursor
-- **Copy LaTeX**: One-click copy with WPS/Word compatibility
-- **Export**: Download as a `.tex` file
+- **预览**：公式实时渲染更新
+- **编辑**：点击「编辑」按钮打开代码编辑器
+- **符号面板**：点击数学符号插入到光标位置
+- **复制 LaTeX**：一键复制，自动兼容 WPS/Word
+- **导出**：下载 `.tex` 文件
 
-### Account System (Optional)
+### 账号系统（可选）
 
-| Mode | Storage | Sync |
-|:-----|:--------|:-----|
-| Guest | Browser localStorage | None |
-| Logged In | Server SQLite | Cross-device |
+| 模式 | 存储位置 | 同步 |
+|:-----|:---------|:-----|
+| 游客模式 | 浏览器 localStorage | 无 |
+| 登录模式 | 服务端 SQLite | 跨设备同步 |
 
-Register: Nav bar > **Login** > **Go to Register**
-
----
-
-## API Configuration
-
-| Field | Description | Example |
-|:------|:------------|:--------|
-| **API Endpoint** | OpenAI-compatible base URL | `https://token-plan-cn.xiaomimimo.com/v1` |
-| **API Key** | Your API key (stored in browser only) | `sk-xxxxxxxxxxxxxxxx` |
-| **Model** | Vision model identifier | `mimo-v2.5` |
-
-> **Security**: Your API key is stored in `localStorage` and never sent to our servers. It is only used to communicate directly with your chosen AI provider.
+注册方式：导航栏 > **登录** > **去注册**
 
 ---
 
-## Supported AI Models
+## API 配置
 
-| Provider | Models | Recommended |
-|:---------|:-------|:------------|
-| **Xiaomi MIMO** | `mimo-v2.5` | Best for China mainland |
-| **OpenAI** | `gpt-4-vision-preview`, `gpt-4o`, `gpt-4o-mini` | High accuracy |
-| **Anthropic** | `claude-3-opus-20240229`, `claude-3-sonnet-20240229`, `claude-3-haiku-20240307` | Strong reasoning |
-| **Other** | Any OpenAI Chat Completions API compatible service | Just set endpoint + model |
+| 字段 | 说明 | 示例 |
+|:-----|:-----|:-----|
+| **API 端点** | OpenAI 兼容的 API 地址 | `https://token-plan-cn.xiaomimimo.com/v1` |
+| **API 密钥** | 你的 API 密钥（仅存浏览器） | `sk-xxxxxxxxxxxxxxxx` |
+| **模型** | 视觉模型标识符 | `mimo-v2.5` |
+
+> **安全说明**：API 密钥存储在浏览器 `localStorage` 中，不会发送到本项目服务器。密钥仅用于直接与你选择的 AI 服务商通信。
 
 ---
 
-## Project Structure
+## 支持的 AI 模型
+
+| 服务商 | 模型 | 推荐场景 |
+|:-------|:-----|:---------|
+| **小米 MIMO** | `mimo-v2.5` | 国内用户首选，速度快、价格低 |
+| **OpenAI** | `gpt-4-vision-preview`、`gpt-4o`、`gpt-4o-mini` | 高精度识别 |
+| **Anthropic** | `claude-3-opus-20240229`、`claude-3-sonnet-20240229`、`claude-3-haiku-20240307` | 强推理能力 |
+| **其他** | 任何兼容 OpenAI Chat Completions API 的服务 | 只需设置端点和模型名 |
+
+---
+
+## 项目结构
 
 <details>
-<summary><strong>Click to expand full structure</strong></summary>
+<summary><strong>点击展开完整目录结构</strong></summary>
 
 ```
 Pic2LaTeX-py/
 |
-+-- client/                          # Frontend (React + Vite)
++-- client/                          # 前端（React + Vite）
 |   +-- src/
 |   |   +-- components/
 |   |   |   +-- upload/
-|   |   |   |   +-- UploadArea.jsx   # Drag-drop + paste upload
+|   |   |   |   +-- UploadArea.jsx   # 拖拽 + 粘贴上传组件
 |   |   |   +-- preview/
-|   |   |   |   +-- LatexPreview.jsx # KaTeX rendering
-|   |   |   |   +-- LatexEditor.jsx  # Code editor
-|   |   |   |   +-- SymbolPanel.jsx  # Math symbol grid
+|   |   |   |   +-- LatexPreview.jsx # KaTeX 渲染组件
+|   |   |   |   +-- LatexEditor.jsx  # LaTeX 代码编辑器
+|   |   |   |   +-- SymbolPanel.jsx  # 数学符号面板
 |   |   |   +-- settings/
-|   |   |       +-- ApiConfig.jsx    # API endpoint/key/model form
+|   |   |       +-- ApiConfig.jsx    # API 配置表单
 |   |   +-- pages/
-|   |   |   +-- Home.jsx             # Main page
-|   |   |   +-- Settings.jsx         # API settings
-|   |   |   +-- History.jsx          # Conversion history
-|   |   |   +-- Login.jsx            # Auth page
-|   |   |   +-- Docs.jsx             # Built-in docs
+|   |   |   +-- Home.jsx             # 首页
+|   |   |   +-- Settings.jsx         # 设置页
+|   |   |   +-- History.jsx          # 历史记录页
+|   |   |   +-- Login.jsx            # 登录/注册页
+|   |   |   +-- Docs.jsx             # 内置文档页
 |   |   +-- services/
-|   |   |   +-- api.js               # Axios client
+|   |   |   +-- api.js               # Axios API 客户端
 |   |   +-- contexts/
-|   |   |   +-- AuthContext.jsx       # Auth state (JWT)
+|   |   |   +-- AuthContext.jsx       # 认证状态管理（JWT）
 |   |   +-- utils/
-|   |   |   +-- storage.js           # localStorage helpers
+|   |   |   +-- storage.js           # localStorage 工具函数
 |   |   +-- styles/
-|   |   |   +-- glassmorphism.css    # Global styles
-|   |   +-- App.jsx                  # Root + routing
-|   |   +-- main.jsx                 # Entry point
+|   |   |   +-- glassmorphism.css    # 全局玻璃拟态样式
+|   |   +-- App.jsx                  # 根组件 + 路由
+|   |   +-- main.jsx                 # 入口文件
 |   +-- index.html
 |   +-- package.json
 |   +-- vite.config.js
 |
-+-- server/                          # Backend (Express)
-|   +-- routes/                      # API handlers
++-- server/                          # 后端（Express）
+|   +-- routes/                      # API 路由处理
 |   +-- middleware/
-|   |   +-- errorHandler.js          # Error handling
-|   +-- db/                          # SQLite init
-|   +-- services/                    # Business logic
-|   +-- config/                      # Server config
-|   +-- app.js                       # Express app
+|   |   +-- errorHandler.js          # 错误处理中间件
+|   +-- db/                          # SQLite 数据库初始化
+|   +-- services/                    # 业务逻辑层
+|   +-- config/                      # 服务器配置
+|   +-- app.js                       # Express 应用
 |   +-- package.json
 |
-+-- uploads/                         # Temp image storage
-+-- docs/
++-- uploads/                         # 临时图片存储
++-- docs/                            # 项目文档
 +-- .gitignore
 +-- README.md
 ```
@@ -385,40 +384,40 @@ Pic2LaTeX-py/
 
 ---
 
-## API Endpoints
+## 接口文档
 
-### Authentication
+### 认证相关
 
-| Method | Endpoint | Body | Auth | Description |
-|:-------|:---------|:-----|:-----|:------------|
-| `POST` | `/api/auth/register` | `{ username, password }` | No | Register new account |
-| `POST` | `/api/auth/login` | `{ username, password }` | No | Login, returns JWT |
-| `GET` | `/api/auth/me` | — | Bearer | Get current user |
+| 方法 | 路径 | 请求体 | 认证 | 说明 |
+|:-----|:-----|:-------|:-----|:-----|
+| `POST` | `/api/auth/register` | `{ username, password }` | 无 | 注册新账号 |
+| `POST` | `/api/auth/login` | `{ username, password }` | 无 | 登录，返回 JWT |
+| `GET` | `/api/auth/me` | — | Bearer | 获取当前用户信息 |
 
-### History
+### 历史记录
 
-| Method | Endpoint | Body | Auth | Description |
-|:-------|:---------|:-----|:-----|:------------|
-| `GET` | `/api/history` | — | Bearer | Get history list |
-| `POST` | `/api/history` | `{ imageId, latex, confidence }` | Bearer | Save record |
-| `DELETE` | `/api/history/:id` | — | Bearer | Delete record |
+| 方法 | 路径 | 请求体 | 认证 | 说明 |
+|:-----|:-----|:-------|:-----|:-----|
+| `GET` | `/api/history` | — | Bearer | 获取历史列表 |
+| `POST` | `/api/history` | `{ imageId, latex, confidence }` | Bearer | 保存记录 |
+| `DELETE` | `/api/history/:id` | — | Bearer | 删除记录 |
 
-### Image Processing
+### 图片处理
 
-| Method | Endpoint | Body | Auth | Description |
-|:-------|:---------|:-----|:-----|:------------|
-| `POST` | `/api/upload` | `multipart/form-data` | No | Upload image |
-| `POST` | `/api/convert` | `{ imageId, options }` | No | Convert to LaTeX |
-| `POST` | `/api/config/test` | `{ endpoint, apiKey, model }` | No | Test API connection |
+| 方法 | 路径 | 请求体 | 认证 | 说明 |
+|:-----|:-----|:-------|:-----|:-----|
+| `POST` | `/api/upload` | `multipart/form-data` | 无 | 上传图片 |
+| `POST` | `/api/convert` | `{ imageId, options }` | 无 | 转换为 LaTeX |
+| `POST` | `/api/config/test` | `{ endpoint, apiKey, model }` | 无 | 测试 API 连接 |
 
-### Request Examples
+### 请求示例
 
 ```bash
-# Upload
+# 上传图片
 curl -X POST http://localhost:3002/api/upload \
   -F "image=@formula.png"
 
-# Convert
+# 转换图片
 curl -X POST http://localhost:3002/api/convert \
   -H "Content-Type: application/json" \
   -d '{
@@ -433,98 +432,97 @@ curl -X POST http://localhost:3002/api/convert \
 
 ---
 
-## WPS/Word Compatibility
+## WPS/Word 兼容说明
 
-When you click **Copy LaTeX**, the app automatically:
+点击「**复制 LaTeX**」时，应用自动执行以下转换：
 
-| Transform | Before | After |
-|:----------|:-------|:------|
-| Strip delimiters | `\[...\]`, `$...$` | Pure LaTeX |
-| Text command | `\text{Hello}` | `\mathrm{Hello}` |
-| Multi-line wrap | Raw `\\` lines | `\begin{aligned}...\end{aligned}` |
-| Spacing clean | `\\[1.5ex]` | `\\` |
+| 转换操作 | 转换前 | 转换后 |
+|:---------|:-------|:-------|
+| 去除分隔符 | `\[...\]`、`$...$` | 纯 LaTeX 代码 |
+| 文本命令 | `\text{Hello}` | `\mathrm{Hello}` |
+| 多行包裹 | 原始 `\\` 换行 | `\begin{aligned}...\end{aligned}` |
+| 间距清理 | `\\[1.5ex]` | `\\` |
 
-**To use in WPS**: Insert > Equation > LaTeX > Paste > Convert
-
----
-
-## Keyboard Shortcuts
-
-| Shortcut | Action |
-|:---------|:-------|
-| `Ctrl + V` | Paste screenshot from clipboard |
-| Drag & Drop | Drop image onto upload area |
+**在 WPS 中使用**：插入 > 公式 > LaTeX > 粘贴 > 转换
 
 ---
 
-## Environment Variables
+## 快捷操作
 
-Create `server/.env`:
+| 快捷键 | 功能 |
+|:-------|:-----|
+| `Ctrl + V` | 粘贴剪贴板中的截图 |
+| 拖拽上传 | 将图片文件拖到上传区域 |
+
+---
+
+## 环境变量
+
+在 `server/.env` 中配置：
 
 ```env
-PORT=3002                    # Server port
+PORT=3002                    # 服务端口
 NODE_ENV=development         # development | production
-CORS_ORIGIN=http://localhost:5173   # Allowed origin
-JWT_SECRET=your-secret-key   # JWT signing secret
+CORS_ORIGIN=http://localhost:5173   # 允许的跨域来源
+JWT_SECRET=your-secret-key   # JWT 签名密钥
 ```
 
 ---
 
-## FAQ
+## 常见问题
 
 <details>
-<summary><strong>Q: Conversion fails?</strong></summary>
+<summary><strong>Q: 转换失败怎么办？</strong></summary>
 
-Check your API endpoint and key in Settings. Click **Test Connection** to verify. Ensure the image is clear and contains math formulas.
+检查 API 端点和密钥是否正确，在设置页面点击「测试连接」验证。确认图片清晰且包含数学公式。
 </details>
 
 <details>
-<summary><strong>Q: WPS shows squares instead of formulas?</strong></summary>
+<summary><strong>Q: WPS 中公式显示为方块？</strong></summary>
 
-Use **Insert > Equation > LaTeX** mode in WPS, not direct text paste.
+确保在 WPS 中选择「插入 > 公式 > LaTeX」模式粘贴，不要直接粘贴文本。
 </details>
 
 <details>
-<summary><strong>Q: Image upload fails?</strong></summary>
+<summary><strong>Q: 图片上传失败？</strong></summary>
 
-Check format (PNG/JPG/GIF/BMP only) and size (max 10MB).
+检查文件格式（仅支持 PNG/JPG/GIF/BMP）和大小（不超过 10MB）。
 </details>
 
 <details>
-<summary><strong>Q: History records disappeared?</strong></summary>
+<summary><strong>Q: 历史记录丢失？</strong></summary>
 
-Guest mode stores records in browser localStorage. Clearing browser data removes them. Register an account to sync to cloud.
+未登录时记录保存在浏览器本地，清除浏览器数据会丢失。建议注册账号将记录保存到云端。
 </details>
 
 <details>
-<summary><strong>Q: Which AI model should I use?</strong></summary>
+<summary><strong>Q: 推荐使用哪个 AI 模型？</strong></summary>
 
-For users in China: Xiaomi MIMO (`mimo-v2.5`) — fast and affordable.
-For best accuracy: GPT-4o or Claude 3 Opus.
+国内用户推荐小米 MIMO（`mimo-v2.5`），速度快、价格低。追求高精度推荐 GPT-4o 或 Claude 3 Opus。
 </details>
 
 ---
 
-## Contributing
+## 参与贡献
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. Fork 本仓库
+2. 创建功能分支（`git checkout -b feature/amazing-feature`）
+3. 提交更改（`git commit -m 'feat: 添加某功能'`）
+4. 推送到远程（`git push origin feature/amazing-feature`）
+5. 发起 Pull Request
 
 ---
 
-## License
+## 开源许可
 
-This project is licensed under the **MIT License**.
+本项目基于 **MIT License** 开源。
 
 ---
 
 <div align="center">
 
-**Pic2LaTeX** — Image to LaTeX, powered by AI.
+**Pic2LaTeX** —— 图片转 LaTeX，AI 驱动。
 
-Made with React, Node.js, and KaTeX.
+使用 React + Node.js + KaTeX 构建。
 
 </div>
